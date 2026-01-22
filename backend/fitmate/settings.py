@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'measurements',
     'outfits',
     'predictions',
+    'recommendations',
 ]
 
 MIDDLEWARE = [

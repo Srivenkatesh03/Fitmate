@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import FitResult
 from .serializers import FitResultSerializer
-from .utils import calculate_fit_score
+from .ml_models import get_fit_predictor
 from measurements.models import Measurement
 from outfits.models import Outfit
 
@@ -36,16 +36,19 @@ class PredictFitView(APIView):
             'chest': float(measurement.chest or 0),
             'waist': float(measurement.waist or 0),
             'hips': float(measurement.hips or 0),
+            'shoulder': float(measurement.shoulder or 0),
         }
         
         outfit_meas = {
             'chest': float(outfit.outfit_chest or 0),
             'waist': float(outfit.outfit_waist or 0),
             'hips': float(outfit.outfit_hips or 0),
+            'shoulder': float(outfit.outfit_shoulder or 0),
         }
         
-        # Calculate fit
-        score, fit_status, recommendations = calculate_fit_score(user_meas, outfit_meas)
+        # Get ML predictor and calculate fit
+        predictor = get_fit_predictor()
+        score, fit_status, recommendations = predictor.predict(user_meas, outfit_meas)
         
         # Save result
         fit_result = FitResult.objects.create(
@@ -63,4 +66,11 @@ class FitResultListView(generics.ListAPIView):
     serializer_class = FitResultSerializer
     
     def get_queryset(self):
-        return FitResult.objects.filter(user=self.request.user).order_by('-created_at')
+        queryset = FitResult.objects.filter(user=self.request.user).order_by('-created_at')
+        
+        # Filter by fit_status if provided
+        fit_status = self.request.query_params.get('fit_status', None)
+        if fit_status:
+            queryset = queryset.filter(fit_status=fit_status)
+        
+        return queryset
