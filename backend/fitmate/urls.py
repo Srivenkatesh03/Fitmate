@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/measurements/', include('measurements.urls')),
     path('api/outfits/', include('outfits.urls')),
     path('api/predictions/', include('predictions.urls')),
+    path('api/recommendations/', include('recommendations.urls')),
 ]
 
 if settings.DEBUG:
