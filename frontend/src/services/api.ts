@@ -32,6 +32,10 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config;
     
+    if (error.response?.status === 401 && originalRequest && !originalRequest.headers) {
+      originalRequest.headers = {};
+    }
+    
     if (error.response?.status === 401 && originalRequest) {
       // Try to refresh token
       const refreshToken = localStorage.getItem('refresh_token');
@@ -45,7 +49,9 @@ api.interceptors.response.use(
           localStorage.setItem('access_token', access);
           
           // Retry original request
-          originalRequest.headers.Authorization = `Bearer ${access}`;
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${access}`;
+          }
           return axios(originalRequest);
         } catch (refreshError) {
           // Refresh failed, logout user

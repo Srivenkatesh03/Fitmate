@@ -13,9 +13,6 @@ numpy==1.26.2
 scikit-learn==1.3.2
 joblib==1.3.2
 
-# Image processing
-pillow==10.1.0
-
 # Utilities
 python-dateutil==2.8.2
 
