@@ -2,17 +2,21 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Center } from '@react-three/drei';
 import { Box } from '@mui/material';
 
+// Color mapping for outfit categories
+const OUTFIT_COLORS: Record<string, string> = {
+  'top': '#FF6B6B',
+  'bottom': '#4ECDC4',
+  'dress': '#95E1D3',
+  'outerwear': '#F38181',
+  'full_body': '#AA96DA',
+};
+
+const DEFAULT_OUTFIT_COLOR = '#FDCB6E';
+
 function OutfitDisplay({ category }: { category: string }) {
   // Choose shape and color based on category
   const getCategoryColor = (cat: string) => {
-    const colors: Record<string, string> = {
-      'top': '#FF6B6B',
-      'bottom': '#4ECDC4',
-      'dress': '#95E1D3',
-      'outerwear': '#F38181',
-      'full_body': '#AA96DA',
-    };
-    return colors[cat.toLowerCase()] || '#FDCB6E';
+    return OUTFIT_COLORS[cat.toLowerCase()] || DEFAULT_OUTFIT_COLOR;
   };
 
   const color = getCategoryColor(category);

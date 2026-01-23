@@ -11,14 +11,25 @@ interface BodyModel3DProps {
   gender?: 'male' | 'female' | 'other';
 }
 
+// Average body measurements for scaling calculations
+const AVERAGE_MEASUREMENTS = {
+  HEIGHT: 170, // cm
+  CHEST: 90,   // cm
+  WAIST: 75,   // cm
+  HIPS: 95,    // cm
+};
+
+// Default waist scale factor
+const DEFAULT_WAIST_SCALE = 0.85;
+
 function BodyMesh({ height = 170, chest = 90, waist = 75, hips = 95, gender = 'other' }: BodyModel3DProps) {
   const meshRef = useRef<THREE.Group>(null);
 
-  // Normalize measurements to scale factors (assuming average measurements)
-  const heightScale = height / 170; // Average height 170cm
-  const chestScale = chest > 0 ? chest / 90 : 1; // Average chest 90cm
-  const waistScale = waist > 0 ? waist / 75 : 0.85; // Average waist 75cm
-  const hipsScale = hips > 0 ? hips / 95 : 1; // Average hips 95cm
+  // Normalize measurements to scale factors
+  const heightScale = height / AVERAGE_MEASUREMENTS.HEIGHT;
+  const chestScale = chest > 0 ? chest / AVERAGE_MEASUREMENTS.CHEST : 1;
+  const waistScale = waist > 0 ? waist / AVERAGE_MEASUREMENTS.WAIST : DEFAULT_WAIST_SCALE;
+  const hipsScale = hips > 0 ? hips / AVERAGE_MEASUREMENTS.HIPS : 1;
 
   // Choose color based on gender
   const bodyColor = gender === 'male' ? '#6B9BD1' : gender === 'female' ? '#E8A0BF' : '#A8C4D6';
