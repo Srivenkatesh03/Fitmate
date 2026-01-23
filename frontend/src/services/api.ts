@@ -37,8 +37,7 @@ api.interceptors.response.use(
       if (!originalRequest.headers) {
         originalRequest.headers = {} as any;
       }
-    
-    if (error.response?.status === 401 && originalRequest) {
+      
       // Try to refresh token
       const refreshToken = localStorage.getItem('refresh_token');
       if (refreshToken) {
