@@ -32,9 +32,11 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config;
     
-    if (error.response?.status === 401 && originalRequest && !originalRequest.headers) {
-      originalRequest.headers = {} as any;
-    }
+    // Ensure headers object exists
+    if (error.response?.status === 401 && originalRequest) {
+      if (!originalRequest.headers) {
+        originalRequest.headers = {} as any;
+      }
     
     if (error.response?.status === 401 && originalRequest) {
       // Try to refresh token

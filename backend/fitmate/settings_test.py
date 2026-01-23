@@ -12,10 +12,9 @@ DATABASES = {
     }
 }
 
-# Faster password hashing for tests
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-]
+# Use default hasher (PBKDF2) for tests - secure and built-in
+# Tests will be slightly slower but still acceptable
+
 
 # Disable migrations for faster tests
 class DisableMigrations:
