@@ -62,7 +62,7 @@ const HistoryPage = () => {
     },
   });
 
-  const getFitStatusColor = (status: string) => {
+  const getFitStatusColor = (status: string): 'success' | 'warning' | 'error' | 'default' => {
     switch (status) {
       case 'perfect_fit':
         return 'success';
@@ -180,7 +180,7 @@ const HistoryPage = () => {
                           <Chip
                             icon={getFitStatusIcon(prediction.fit_status) || undefined}
                             label={getFitStatusLabel(prediction.fit_status)}
-                            color={getFitStatusColor(prediction.fit_status) as any}
+                            color={getFitStatusColor(prediction.fit_status)}
                             size="small"
                             sx={{ mb: 1 }}
                           />
@@ -252,7 +252,7 @@ const HistoryPage = () => {
                         <Chip
                           icon={getFitStatusIcon(prediction.fit_status) || undefined}
                           label={getFitStatusLabel(prediction.fit_status)}
-                          color={getFitStatusColor(prediction.fit_status) as any}
+                          color={getFitStatusColor(prediction.fit_status)}
                           size="small"
                         />
                       </TableCell>

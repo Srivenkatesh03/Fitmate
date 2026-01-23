@@ -97,7 +97,7 @@ const OutfitDetailPage = () => {
   const predictMutation = useMutation({
     mutationFn: () => predictionsAPI.predict(Number(id)),
     onSuccess: () => {
-      navigate('/predictions');
+      navigate('/history');
     },
   });
 

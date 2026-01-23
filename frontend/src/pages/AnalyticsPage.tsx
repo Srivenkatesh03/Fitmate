@@ -21,6 +21,16 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis
 import MainLayout from '../components/layout/MainLayout';
 import { outfitsAPI, predictionsAPI } from '../services/api';
 
+interface Prediction {
+  id: number;
+  outfit: {
+    id: number;
+    name: string;
+  };
+  fit_status: 'perfect_fit' | 'acceptable_fit' | 'poor_fit';
+  confidence_score: number;
+}
+
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
 const AnalyticsPage = () => {
@@ -44,9 +54,9 @@ const AnalyticsPage = () => {
 
   // Process prediction data for charts
   const fitStatusData = predictions ? [
-    { name: 'Perfect Fit', value: predictions.filter((p: any) => p.fit_status === 'perfect_fit').length },
-    { name: 'Acceptable Fit', value: predictions.filter((p: any) => p.fit_status === 'acceptable_fit').length },
-    { name: 'Poor Fit', value: predictions.filter((p: any) => p.fit_status === 'poor_fit').length },
+    { name: 'Perfect Fit', value: predictions.filter((p: Prediction) => p.fit_status === 'perfect_fit').length },
+    { name: 'Acceptable Fit', value: predictions.filter((p: Prediction) => p.fit_status === 'acceptable_fit').length },
+    { name: 'Poor Fit', value: predictions.filter((p: Prediction) => p.fit_status === 'poor_fit').length },
   ].filter(item => item.value > 0) : [];
 
   // Process category data

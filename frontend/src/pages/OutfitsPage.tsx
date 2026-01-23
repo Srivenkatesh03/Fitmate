@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -45,6 +45,7 @@ interface Outfit {
 
 const OutfitsPage = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
@@ -65,6 +66,13 @@ const OutfitsPage = () => {
       };
       const response = await outfitsAPI.list(params);
       return response.data;
+    },
+  });
+
+  const favoriteMutation = useMutation({
+    mutationFn: (outfitId: number) => outfitsAPI.toggleFavorite(outfitId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['outfits'] });
     },
   });
 
@@ -270,7 +278,12 @@ const OutfitsPage = () => {
                           </Typography>
                         </CardContent>
                         <CardActions>
-                          <IconButton size="small" color={outfit.is_favorite ? 'error' : 'default'}>
+                          <IconButton
+                            size="small"
+                            color={outfit.is_favorite ? 'error' : 'default'}
+                            onClick={() => favoriteMutation.mutate(outfit.id)}
+                            disabled={favoriteMutation.isPending}
+                          >
                             {outfit.is_favorite ? <Favorite /> : <FavoriteBorder />}
                           </IconButton>
                           <Button
