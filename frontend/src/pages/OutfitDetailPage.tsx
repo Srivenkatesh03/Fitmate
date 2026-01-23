@@ -30,10 +30,12 @@ import {
   Delete,
   Timeline,
   CheckCircle,
+  ViewInAr,
 } from '@mui/icons-material';
 import MainLayout from '../components/layout/MainLayout';
 import { outfitsAPI, predictionsAPI } from '../services/api';
 import { format } from 'date-fns';
+import { OutfitModel3D } from '../components/3d';
 
 interface Outfit {
   id: number;
@@ -61,6 +63,7 @@ const OutfitDetailPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [show3DModel, setShow3DModel] = useState(true);
 
   const { data: outfit, isLoading, error } = useQuery({
     queryKey: ['outfit', id],
@@ -132,6 +135,14 @@ const OutfitDetailPage = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4">{outfit.name}</Typography>
           <Box>
+            <Button
+              variant="outlined"
+              startIcon={<ViewInAr />}
+              onClick={() => setShow3DModel(!show3DModel)}
+              sx={{ mr: 1 }}
+            >
+              {show3DModel ? 'Hide' : 'Show'} 3D
+            </Button>
             <IconButton
               onClick={() => favoriteMutation.mutate()}
               color={outfit.is_favorite ? 'error' : 'default'}
@@ -144,6 +155,12 @@ const OutfitDetailPage = () => {
             </IconButton>
           </Box>
         </Box>
+
+        {show3DModel && (
+          <Box sx={{ mb: 3 }}>
+            <OutfitModel3D category={outfit.category} />
+          </Box>
+        )}
 
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>

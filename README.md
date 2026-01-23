@@ -6,11 +6,13 @@ Fitmate helps users predict how well outfits will fit based on their body measur
 ## Features
 - 🔐 **User Authentication** - Secure JWT-based authentication with email verification
 - 📏 **Body Measurement Tracking** - Store and manage your body measurements
+- 🎯 **3D Body Visualization** - Interactive 3D model of your body based on your measurements
 - 👔 **Outfit Management** - Upload and organize your wardrobe with images
+- 🎨 **3D Outfit Preview** - View outfits in 3D with category-based visualizations
 - 🤖 **AI-Powered Fit Prediction** - Smart predictions using machine learning
 - 📊 **Analytics & Insights** - Track your wardrobe usage and preferences
 - 💡 **Personalized Recommendations** - Get outfit suggestions based on body shape and preferences
-- 🎨 **Modern UI** - Responsive React frontend with Material-UI
+- 🖼️ **Modern UI** - Responsive React frontend with Material-UI
 
 ## Tech Stack
 
@@ -24,6 +26,7 @@ Fitmate helps users predict how well outfits will fit based on their body measur
 ### Frontend
 - **Framework:** React 18+ with TypeScript
 - **UI Library:** Material-UI (MUI)
+- **3D Graphics:** React Three Fiber, Three.js, Drei
 - **State Management:** React Query
 - **Routing:** React Router v6
 - **HTTP Client:** Axios
@@ -116,6 +119,24 @@ Fitmate helps users predict how well outfits will fit based on their body measur
    ```
 
    Frontend will be available at `http://localhost:3000`
+
+## 3D Visualization Features
+
+Fitmate includes interactive 3D visualizations to help users better understand their body measurements and outfit fits.
+
+### 3D Body Model
+- **Real-time Updates:** The 3D body model updates instantly as you enter your measurements
+- **Interactive Controls:** Rotate, zoom, and pan the model for a complete 360° view
+- **Gender-based Styling:** Different colors and proportions for male, female, and other body types
+- **Accurate Proportions:** Body parts scale based on your actual measurements (height, chest, waist, hips)
+
+### 3D Outfit Visualization
+- **Category-based Design:** Different 3D shapes for tops, bottoms, dresses, and outerwear
+- **Auto-rotating Display:** Outfits automatically rotate for a full view
+- **Color Coding:** Each category has distinctive colors for easy identification
+- **Interactive Preview:** Click and drag to manually control the outfit view
+
+![3D Models Demo](https://github.com/user-attachments/assets/47380e8e-28c3-4944-ae27-3a97500cba6f)
 
 ### Docker Setup
 

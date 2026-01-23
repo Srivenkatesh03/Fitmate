@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -12,13 +12,16 @@ import {
   CircularProgress,
   MenuItem,
   Divider,
+  Card,
 } from '@mui/material';
-import { Save } from '@mui/icons-material';
+import { Save, ViewInAr } from '@mui/icons-material';
 import MainLayout from '../components/layout/MainLayout';
 import { measurementsAPI, MeasurementData } from '../services/api';
+import { BodyModel3D } from '../components/3d';
 
 const MeasurementsPage = () => {
   const queryClient = useQueryClient();
+  const [show3DModel, setShow3DModel] = useState(true);
 
   const { data: measurements, isLoading, error } = useQuery({
     queryKey: ['measurements'],
@@ -40,7 +43,7 @@ const MeasurementsPage = () => {
     },
   });
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<MeasurementData>({
+  const { control, handleSubmit, reset, watch, formState: { errors } } = useForm<MeasurementData>({
     defaultValues: {
       height: 0,
       weight: 0,
@@ -51,6 +54,9 @@ const MeasurementsPage = () => {
       gender: 'other',
     },
   });
+
+  // Watch form values for real-time 3D model updates
+  const formValues = watch();
 
   useEffect(() => {
     if (measurements) {
@@ -75,12 +81,43 @@ const MeasurementsPage = () => {
   return (
     <MainLayout>
       <Box>
-        <Typography variant="h4" gutterBottom>
-          My Body Measurements
-        </Typography>
-        <Typography variant="body1" color="text.secondary" paragraph>
-          Enter your body measurements to get accurate fit predictions for your outfits.
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              My Body Measurements
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Enter your body measurements to get accurate fit predictions for your outfits.
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            startIcon={<ViewInAr />}
+            onClick={() => setShow3DModel(!show3DModel)}
+          >
+            {show3DModel ? 'Hide' : 'Show'} 3D Model
+          </Button>
+        </Box>
+
+        {show3DModel && (
+          <Card sx={{ mb: 3, p: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              3D Body Visualization
+            </Typography>
+            <Typography variant="body2" color="text.secondary" paragraph>
+              Interactive 3D model of your body based on your measurements. Use your mouse to rotate and zoom.
+            </Typography>
+            <Box sx={{ height: '500px', width: '100%' }}>
+              <BodyModel3D
+                height={formValues.height || measurements?.height || 170}
+                chest={formValues.chest || measurements?.chest || 90}
+                waist={formValues.waist || measurements?.waist || 75}
+                hips={formValues.hips || measurements?.hips || 95}
+                gender={formValues.gender || measurements?.gender || 'other'}
+              />
+            </Box>
+          </Card>
+        )}
 
         <Paper sx={{ p: 4, maxWidth: 800, mx: 'auto', mt: 3 }}>
           {error && (

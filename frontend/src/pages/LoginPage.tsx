@@ -14,11 +14,18 @@ import { useAuth } from '../context/AuthContext';
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [error, setError] = useState<string>('');
+
+  const boxStyles = {
+    marginTop: '4rem',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center' as const,
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,14 +44,7 @@ const LoginPage = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={boxStyles}>
         <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
           <Typography component="h1" variant="h5" align="center" gutterBottom>
             Fitmate Login
