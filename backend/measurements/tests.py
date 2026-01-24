@@ -32,10 +32,10 @@ class MeasurementViewSetTests(APITestCase):
         }
     
     def test_get_measurements_not_found(self):
-        """Test GET request when measurements don't exist returns 404"""
+        """Test GET request when measurements don't exist returns null"""
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertIn('not found', response.data['detail'].lower())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.data)
     
     def test_post_create_measurements(self):
         """Test POST request creates new measurements"""
@@ -146,9 +146,10 @@ class MeasurementViewSetTests(APITestCase):
         )
         self.client.force_authenticate(user=user2)
         
-        # Second user should get 404 (no measurements)
+        # Second user should get 200 with null (no measurements)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.data)
 
 
 class MeasurementModelTests(TestCase):
