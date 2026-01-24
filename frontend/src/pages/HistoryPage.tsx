@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -257,8 +258,8 @@ const HistoryPage = () => {
                 </TableHead>
                 <TableBody>
                   {predictions.map((prediction: Prediction) => (
-                    <>
-                      <TableRow key={prediction.id} hover>
+                    <React.Fragment key={prediction.id}>
+                      <TableRow hover>
                         <TableCell>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <CardMedia
@@ -324,7 +325,7 @@ const HistoryPage = () => {
                           </Collapse>
                         </TableCell>
                       </TableRow>
-                    </>
+                    </React.Fragment>
                   ))}
                 </TableBody>
               </Table>

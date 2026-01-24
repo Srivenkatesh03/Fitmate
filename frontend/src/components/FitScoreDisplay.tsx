@@ -14,7 +14,7 @@ interface FitScoreDisplayProps {
 
 const FitScoreDisplay = ({ fitScore, fitStatus, recommendations, measurements }: FitScoreDisplayProps) => {
   // Determine color based on score
-  const getScoreColor = (score: number) => {
+  const getScoreColor = (score: number): 'success' | 'info' | 'warning' | 'error' => {
     if (score >= 90) return 'success';
     if (score >= 75) return 'info';
     if (score >= 50) return 'warning';
@@ -51,7 +51,7 @@ const FitScoreDisplay = ({ fitScore, fitStatus, recommendations, measurements }:
     }
   };
 
-  const getMeasurementStatus = (diff: number) => {
+  const getMeasurementStatus = (diff: number): { text: string; color: 'success' | 'info' | 'warning' | 'error' } => {
     if (Math.abs(diff) < 2) return { text: 'Perfect Fit ✓', color: 'success' };
     if (diff >= 2 && diff <= 5) return { text: 'Slightly Loose', color: 'info' };
     if (diff > 5) return { text: 'Loose', color: 'warning' };
@@ -73,7 +73,7 @@ const FitScoreDisplay = ({ fitScore, fitStatus, recommendations, measurements }:
           </Box>
           <Chip 
             label={getStatusText(fitStatus)} 
-            color={scoreColor as any}
+            color={scoreColor}
             size="medium"
           />
         </Box>
@@ -81,7 +81,7 @@ const FitScoreDisplay = ({ fitScore, fitStatus, recommendations, measurements }:
         <LinearProgress 
           variant="determinate" 
           value={fitScore} 
-          color={scoreColor as any}
+          color={scoreColor}
           sx={{ height: 10, borderRadius: 1 }}
         />
       </Box>
@@ -100,7 +100,7 @@ const FitScoreDisplay = ({ fitScore, fitStatus, recommendations, measurements }:
                   </Typography>
                   <Chip 
                     label={getMeasurementStatus(measurements.chest.diff).text}
-                    color={getMeasurementStatus(measurements.chest.diff).color as any}
+                    color={getMeasurementStatus(measurements.chest.diff).color}
                     size="small"
                     sx={{ mt: 1 }}
                   />
@@ -121,7 +121,7 @@ const FitScoreDisplay = ({ fitScore, fitStatus, recommendations, measurements }:
                   </Typography>
                   <Chip 
                     label={getMeasurementStatus(measurements.waist.diff).text}
-                    color={getMeasurementStatus(measurements.waist.diff).color as any}
+                    color={getMeasurementStatus(measurements.waist.diff).color}
                     size="small"
                     sx={{ mt: 1 }}
                   />
@@ -142,7 +142,7 @@ const FitScoreDisplay = ({ fitScore, fitStatus, recommendations, measurements }:
                   </Typography>
                   <Chip 
                     label={getMeasurementStatus(measurements.hips.diff).text}
-                    color={getMeasurementStatus(measurements.hips.diff).color as any}
+                    color={getMeasurementStatus(measurements.hips.diff).color}
                     size="small"
                     sx={{ mt: 1 }}
                   />

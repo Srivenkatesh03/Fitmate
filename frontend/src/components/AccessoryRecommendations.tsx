@@ -10,13 +10,11 @@ interface Accessory {
 
 interface AccessoryRecommendationsProps {
   outfitCategory?: string;
-  outfitColor?: string;
   occasion?: string;
 }
 
 const AccessoryRecommendations = ({ 
   outfitCategory = 'casual',
-  outfitColor: _outfitColor = 'blue', // Keep for future use
   occasion = 'casual'
 }: AccessoryRecommendationsProps) => {
   

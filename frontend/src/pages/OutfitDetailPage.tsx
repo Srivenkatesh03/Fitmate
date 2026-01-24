@@ -322,7 +322,6 @@ const OutfitDetailPage = () => {
           <Grid item xs={12} md={6}>
             <AccessoryRecommendations
               outfitCategory={outfit.category}
-              outfitColor={outfit.color}
               occasion={outfit.occasion}
             />
           </Grid>
