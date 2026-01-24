@@ -52,6 +52,8 @@ const MeasurementsPage = () => {
       hips: 0,
       shoulder: 0,
       gender: 'other',
+      skin_tone: '',
+      body_shape: '',
     },
   });
 
@@ -114,6 +116,7 @@ const MeasurementsPage = () => {
                 waist={formValues.waist || measurements?.waist || 75}
                 hips={formValues.hips || measurements?.hips || 95}
                 gender={formValues.gender || measurements?.gender || 'other'}
+                skinTone={formValues.skin_tone || measurements?.skin_tone || ''}
               />
             </Box>
           </Card>
@@ -171,6 +174,30 @@ const MeasurementsPage = () => {
 
               <Grid item xs={12} sm={6}>
                 <Controller
+                  name="skin_tone"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      select
+                      fullWidth
+                      label="Skin Tone"
+                      helperText="Select your skin tone for avatar customization"
+                    >
+                      <MenuItem value="">None</MenuItem>
+                      <MenuItem value="fair">Fair</MenuItem>
+                      <MenuItem value="light">Light</MenuItem>
+                      <MenuItem value="medium">Medium</MenuItem>
+                      <MenuItem value="tan">Tan</MenuItem>
+                      <MenuItem value="brown">Brown</MenuItem>
+                      <MenuItem value="dark">Dark</MenuItem>
+                    </TextField>
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Controller
                   name="height"
                   control={control}
                   rules={{
@@ -211,6 +238,29 @@ const MeasurementsPage = () => {
                       helperText={errors.weight?.message}
                       onChange={(e) => field.onChange(parseFloat(e.target.value))}
                     />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name="body_shape"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      select
+                      fullWidth
+                      label="Body Shape"
+                      helperText="Select your body shape or leave empty"
+                    >
+                      <MenuItem value="">None</MenuItem>
+                      <MenuItem value="rectangle">Rectangle</MenuItem>
+                      <MenuItem value="triangle">Triangle (Pear)</MenuItem>
+                      <MenuItem value="inverted_triangle">Inverted Triangle</MenuItem>
+                      <MenuItem value="hourglass">Hourglass</MenuItem>
+                      <MenuItem value="oval">Apple (Oval)</MenuItem>
+                    </TextField>
                   )}
                 />
               </Grid>

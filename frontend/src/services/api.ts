@@ -134,6 +134,8 @@ export interface MeasurementData {
   hips?: number;
   shoulder?: number;
   gender: 'male' | 'female' | 'other';
+  skin_tone?: string;
+  body_shape?: string;
 }
 
 export interface OutfitListParams {
