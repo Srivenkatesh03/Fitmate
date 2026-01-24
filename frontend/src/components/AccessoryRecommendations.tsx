@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, Card, CardContent, CardMedia, Chip, Paper } from '@mui/material';
+import { Box, Typography, Grid, Card, CardContent, Chip, Paper } from '@mui/material';
 import { Watch, ShoppingBag, Diamond, Checkroom } from '@mui/icons-material';
 
 interface Accessory {
@@ -16,7 +16,7 @@ interface AccessoryRecommendationsProps {
 
 const AccessoryRecommendations = ({ 
   outfitCategory = 'casual',
-  outfitColor = 'blue',
+  outfitColor: _outfitColor = 'blue', // Keep for future use
   occasion = 'casual'
 }: AccessoryRecommendationsProps) => {
   
