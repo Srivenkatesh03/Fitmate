@@ -9,6 +9,7 @@ interface BodyModel3DProps {
   waist?: number;
   hips?: number;
   gender?: 'male' | 'female' | 'other';
+  skinTone?: string;
 }
 
 // Average body measurements for scaling calculations
@@ -22,7 +23,17 @@ const AVERAGE_MEASUREMENTS = {
 // Default waist scale factor
 const DEFAULT_WAIST_SCALE = 0.85;
 
-function BodyMesh({ height = 170, chest = 90, waist = 75, hips = 95, gender = 'other' }: BodyModel3DProps) {
+// Skin tone color mapping
+const SKIN_TONE_COLORS: Record<string, string> = {
+  'fair': '#FFE4C4',
+  'light': '#F5D5B8',
+  'medium': '#D9A974',
+  'tan': '#C68642',
+  'brown': '#8D5524',
+  'dark': '#5C3317',
+};
+
+function BodyMesh({ height = 170, chest = 90, waist = 75, hips = 95, gender = 'other', skinTone = '' }: BodyModel3DProps) {
   const meshRef = useRef<THREE.Group>(null);
 
   // Normalize measurements to scale factors
@@ -31,8 +42,16 @@ function BodyMesh({ height = 170, chest = 90, waist = 75, hips = 95, gender = 'o
   const waistScale = waist > 0 ? waist / AVERAGE_MEASUREMENTS.WAIST : DEFAULT_WAIST_SCALE;
   const hipsScale = hips > 0 ? hips / AVERAGE_MEASUREMENTS.HIPS : 1;
 
-  // Choose color based on gender
-  const bodyColor = gender === 'male' ? '#6B9BD1' : gender === 'female' ? '#E8A0BF' : '#A8C4D6';
+  // Choose color based on skin tone first, then gender as fallback
+  let bodyColor = '#A8C4D6'; // Default color
+  
+  if (skinTone && SKIN_TONE_COLORS[skinTone]) {
+    bodyColor = SKIN_TONE_COLORS[skinTone];
+  } else if (gender === 'male') {
+    bodyColor = '#6B9BD1';
+  } else if (gender === 'female') {
+    bodyColor = '#E8A0BF';
+  }
 
   return (
     <group ref={meshRef}>

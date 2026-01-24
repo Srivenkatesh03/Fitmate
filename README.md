@@ -5,13 +5,20 @@ Fitmate helps users predict how well outfits will fit based on their body measur
 
 ## Features
 - 🔐 **User Authentication** - Secure JWT-based authentication with email verification
+- 👥 **Role-Based Access Control** - Admin and user roles with permission management
 - 📏 **Body Measurement Tracking** - Store and manage your body measurements
-- 🎯 **3D Body Visualization** - Interactive 3D model of your body based on your measurements
+- 🎨 **Skin Tone Customization** - Choose from 6 skin tone options for personalized 3D avatars
+- 🔷 **Body Shape Classification** - Select your body shape (Rectangle, Triangle, Hourglass, etc.)
+- 🎯 **3D Body Visualization** - Interactive 3D model with real-time skin tone application
 - 👔 **Outfit Management** - Upload and organize your wardrobe with images
+- 📐 **Required Dress Measurements** - Ensure accurate fit predictions with mandatory measurements for dresses
 - 🎨 **3D Outfit Preview** - View outfits in 3D with category-based visualizations
 - 🤖 **AI-Powered Fit Prediction** - Smart predictions using machine learning
-- 📊 **Analytics & Insights** - Track your wardrobe usage and preferences
-- 💡 **Personalized Recommendations** - Get outfit suggestions based on body shape and preferences
+- 📊 **Enhanced Fit Scoring** - Detailed breakdown with per-measurement analysis (chest, waist, hips)
+- ✨ **Visual Fit Indicators** - Color-coded fit status with percentage accuracy
+- 💍 **Accessory Recommendations** - Smart suggestions for footwear, jewelry, bags, and more
+- 💡 **Personalized Styling Tips** - Body shape-specific styling advice and color coordination
+- 📈 **Analytics & Insights** - Track your wardrobe usage and preferences
 - 🖼️ **Modern UI** - Responsive React frontend with Material-UI
 
 ## Tech Stack

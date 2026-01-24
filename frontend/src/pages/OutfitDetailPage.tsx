@@ -33,7 +33,9 @@ import {
   ViewInAr,
 } from '@mui/icons-material';
 import MainLayout from '../components/layout/MainLayout';
-import { outfitsAPI, predictionsAPI } from '../services/api';
+import AccessoryRecommendations from '../components/AccessoryRecommendations';
+import StylingTips from '../components/StylingTips';
+import { outfitsAPI, predictionsAPI, measurementsAPI } from '../services/api';
 import { format } from 'date-fns';
 import { OutfitModel3D } from '../components/3d';
 
@@ -72,6 +74,14 @@ const OutfitDetailPage = () => {
       return response.data as Outfit;
     },
     enabled: !!id,
+  });
+
+  const { data: measurements } = useQuery({
+    queryKey: ['measurements'],
+    queryFn: async () => {
+      const response = await measurementsAPI.get();
+      return response.data;
+    },
   });
 
   const favoriteMutation = useMutation({
@@ -296,6 +306,24 @@ const OutfitDetailPage = () => {
                 </Table>
               </Paper>
             )}
+          </Grid>
+        </Grid>
+
+        {/* Styling Recommendations Section */}
+        <Grid container spacing={3} sx={{ mt: 2 }}>
+          <Grid item xs={12} md={6}>
+            <StylingTips
+              bodyShape={measurements?.body_shape}
+              occasion={outfit.occasion}
+              category={outfit.category}
+              color={outfit.color}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <AccessoryRecommendations
+              outfitCategory={outfit.category}
+              occasion={outfit.occasion}
+            />
           </Grid>
         </Grid>
 

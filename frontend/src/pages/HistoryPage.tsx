@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -22,6 +23,7 @@ import {
   Grid,
   IconButton,
   Tooltip,
+  Collapse,
 } from '@mui/material';
 import {
   CheckCircle,
@@ -29,8 +31,11 @@ import {
   Cancel,
   Visibility,
   FilterList,
+  ExpandMore,
+  ExpandLess,
 } from '@mui/icons-material';
 import MainLayout from '../components/layout/MainLayout';
+import FitScoreDisplay from '../components/FitScoreDisplay';
 import { predictionsAPI } from '../services/api';
 import { format } from 'date-fns';
 
@@ -42,16 +47,21 @@ interface Prediction {
     image: string;
     category: string;
   };
-  fit_status: 'perfect_fit' | 'acceptable_fit' | 'poor_fit';
-  confidence_score: number;
-  predicted_size?: string;
+  fit_status: string;
+  fit_score: number;
   recommendations?: string;
   created_at: string;
+  measurement_breakdown?: {
+    chest?: { user: number; outfit: number; diff: number; status: string };
+    waist?: { user: number; outfit: number; diff: number; status: string };
+    hips?: { user: number; outfit: number; diff: number; status: string };
+  };
 }
 
 const HistoryPage = () => {
   const navigate = useNavigate();
   const [fitStatusFilter, setFitStatusFilter] = useState('');
+  const [expandedRow, setExpandedRow] = useState<number | null>(null);
 
   const { data: predictions, isLoading, error } = useQuery({
     queryKey: ['prediction-history', fitStatusFilter],
@@ -62,13 +72,15 @@ const HistoryPage = () => {
     },
   });
 
-  const getFitStatusColor = (status: string): 'success' | 'warning' | 'error' | 'default' => {
+  const getFitStatusColor = (status: string): 'success' | 'warning' | 'error' | 'default' | 'info' => {
     switch (status) {
-      case 'perfect_fit':
+      case 'perfect':
         return 'success';
-      case 'acceptable_fit':
+      case 'good':
+        return 'info';
+      case 'loose':
         return 'warning';
-      case 'poor_fit':
+      case 'tight':
         return 'error';
       default:
         return 'default';
@@ -77,11 +89,13 @@ const HistoryPage = () => {
 
   const getFitStatusIcon = (status: string) => {
     switch (status) {
-      case 'perfect_fit':
+      case 'perfect':
         return <CheckCircle />;
-      case 'acceptable_fit':
+      case 'good':
+        return <CheckCircle />;
+      case 'loose':
         return <Warning />;
-      case 'poor_fit':
+      case 'tight':
         return <Cancel />;
       default:
         return null;
@@ -89,7 +103,18 @@ const HistoryPage = () => {
   };
 
   const getFitStatusLabel = (status: string) => {
-    return status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    switch (status) {
+      case 'perfect':
+        return 'Perfect Fit';
+      case 'good':
+        return 'Good Fit';
+      case 'loose':
+        return 'Loose Fit';
+      case 'tight':
+        return 'Tight Fit';
+      default:
+        return status;
+    }
   };
 
   return (
@@ -117,9 +142,10 @@ const HistoryPage = () => {
               size="small"
             >
               <MenuItem value="">All Predictions</MenuItem>
-              <MenuItem value="perfect_fit">Perfect Fit</MenuItem>
-              <MenuItem value="acceptable_fit">Acceptable Fit</MenuItem>
-              <MenuItem value="poor_fit">Poor Fit</MenuItem>
+              <MenuItem value="perfect">Perfect Fit</MenuItem>
+              <MenuItem value="good">Good Fit</MenuItem>
+              <MenuItem value="loose">Loose Fit</MenuItem>
+              <MenuItem value="tight">Tight Fit</MenuItem>
             </TextField>
             {fitStatusFilter && (
               <Button size="small" onClick={() => setFitStatusFilter('')}>
@@ -185,7 +211,7 @@ const HistoryPage = () => {
                             sx={{ mb: 1 }}
                           />
                           <Typography variant="body2" color="text.secondary">
-                            Confidence: {(prediction.confidence_score * 100).toFixed(0)}%
+                            Score: {Math.round(prediction.fit_score)}%
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
                             {format(new Date(prediction.created_at), 'PPp')}
@@ -225,63 +251,81 @@ const HistoryPage = () => {
                     <TableCell>Outfit</TableCell>
                     <TableCell>Category</TableCell>
                     <TableCell>Fit Status</TableCell>
-                    <TableCell>Confidence</TableCell>
-                    <TableCell>Predicted Size</TableCell>
+                    <TableCell>Fit Score</TableCell>
                     <TableCell>Date</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {predictions.map((prediction: Prediction) => (
-                    <TableRow key={prediction.id} hover>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                          <CardMedia
-                            component="img"
-                            sx={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 1 }}
-                            image={prediction.outfit.image}
-                            alt={prediction.outfit.name}
+                    <React.Fragment key={prediction.id}>
+                      <TableRow hover>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <CardMedia
+                              component="img"
+                              sx={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 1 }}
+                              image={prediction.outfit.image}
+                              alt={prediction.outfit.name}
+                            />
+                            <Typography variant="body2">{prediction.outfit.name}</Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Chip label={prediction.outfit.category} size="small" />
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            icon={getFitStatusIcon(prediction.fit_status) || undefined}
+                            label={getFitStatusLabel(prediction.fit_status)}
+                            color={getFitStatusColor(prediction.fit_status)}
+                            size="small"
                           />
-                          <Typography variant="body2">{prediction.outfit.name}</Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Chip label={prediction.outfit.category} size="small" />
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          icon={getFitStatusIcon(prediction.fit_status) || undefined}
-                          label={getFitStatusLabel(prediction.fit_status)}
-                          color={getFitStatusColor(prediction.fit_status)}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography variant="body2">
-                            {(prediction.confidence_score * 100).toFixed(0)}%
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        {prediction.predicted_size || 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        <Tooltip title={format(new Date(prediction.created_at), 'PPpp')}>
-                          <Typography variant="body2" color="text.secondary">
-                            {format(new Date(prediction.created_at), 'PP')}
-                          </Typography>
-                        </Tooltip>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          size="small"
-                          onClick={() => navigate(`/outfits/${prediction.outfit.id}`)}
-                        >
-                          <Visibility />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Typography variant="body2">
+                              {Math.round(prediction.fit_score)}%
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Tooltip title={format(new Date(prediction.created_at), 'PPpp')}>
+                            <Typography variant="body2" color="text.secondary">
+                              {format(new Date(prediction.created_at), 'PP')}
+                            </Typography>
+                          </Tooltip>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            size="small"
+                            onClick={() => setExpandedRow(expandedRow === prediction.id ? null : prediction.id)}
+                          >
+                            {expandedRow === prediction.id ? <ExpandLess /> : <ExpandMore />}
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => navigate(`/outfits/${prediction.outfit.id}`)}
+                          >
+                            <Visibility />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell colSpan={6} sx={{ py: 0, border: 0 }}>
+                          <Collapse in={expandedRow === prediction.id} timeout="auto" unmountOnExit>
+                            <Box sx={{ py: 2 }}>
+                              <FitScoreDisplay
+                                fitScore={prediction.fit_score}
+                                fitStatus={prediction.fit_status}
+                                recommendations={prediction.recommendations}
+                                measurements={prediction.measurement_breakdown}
+                              />
+                            </Box>
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+                    </React.Fragment>
                   ))}
                 </TableBody>
               </Table>
