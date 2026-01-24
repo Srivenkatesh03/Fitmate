@@ -44,7 +44,29 @@ class MeasurementViewSet(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def put(self, request):
-        """Update existing measurements"""
+        """Update existing measurements (full replacement)"""
+        try:
+            measurement = Measurement.objects.get(user=request.user)
+        except Measurement.DoesNotExist:
+            return Response(
+                {'error': 'Measurements not found. Use POST to create.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        serializer = self.get_serializer(measurement, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Auto-detect body shape if not provided
+        if 'body_shape' not in request.data:
+            body_shape = detect_body_shape(serializer.validated_data)
+            if body_shape:
+                serializer.validated_data['body_shape'] = body_shape
+        
+        serializer.save()
+        return Response(serializer.data)
+    
+    def patch(self, request):
+        """Partial update of measurements"""
         try:
             measurement = Measurement.objects.get(user=request.user)
         except Measurement.DoesNotExist:
@@ -64,10 +86,6 @@ class MeasurementViewSet(generics.GenericAPIView):
         
         serializer.save()
         return Response(serializer.data)
-    
-    def patch(self, request):
-        """Partial update of measurements"""
-        return self.put(request)
 
 
 class MeasurementCreateView(generics.CreateAPIView):
