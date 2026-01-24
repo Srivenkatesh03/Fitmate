@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import MeasurementCreateView, MeasurementDetailView
+from .views import MeasurementViewSet
 
 urlpatterns = [
-    path('', MeasurementDetailView.as_view(), name='measurement-detail'),
+    path('', MeasurementViewSet.as_view(), name='measurements'),
 ]
