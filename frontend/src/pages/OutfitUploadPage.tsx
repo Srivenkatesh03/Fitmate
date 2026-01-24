@@ -62,7 +62,7 @@ const OutfitUploadPage = () => {
     },
   });
 
-  const { control, handleSubmit, formState: { errors } } = useForm<OutfitFormData>({
+  const { control, handleSubmit, watch, formState: { errors } } = useForm<OutfitFormData>({
     defaultValues: {
       name: '',
       category: '',
@@ -74,6 +74,9 @@ const OutfitUploadPage = () => {
       notes: '',
     },
   });
+
+  // Watch category to conditionally require measurements
+  const selectedCategory = watch('category');
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -303,10 +306,12 @@ const OutfitUploadPage = () => {
 
                   <Grid item xs={12}>
                     <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-                      Garment Measurements (Optional)
+                      Garment Measurements {selectedCategory === 'dress' && <span style={{ color: 'red' }}>*</span>}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
-                      These help improve fit predictions
+                      {selectedCategory === 'dress' 
+                        ? 'Required for dress category to ensure accurate fit predictions'
+                        : 'Optional: These help improve fit predictions'}
                     </Typography>
                   </Grid>
 
@@ -314,12 +319,18 @@ const OutfitUploadPage = () => {
                     <Controller
                       name="garment_length"
                       control={control}
+                      rules={selectedCategory === 'dress' ? {
+                        required: 'Length is required for dresses',
+                        min: { value: 1, message: 'Length must be positive' }
+                      } : undefined}
                       render={({ field }) => (
                         <TextField
                           {...field}
                           type="number"
                           fullWidth
-                          label="Length (cm)"
+                          label={`Length (cm)${selectedCategory === 'dress' ? ' *' : ''}`}
+                          error={!!errors.garment_length}
+                          helperText={errors.garment_length?.message}
                           onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
                         />
                       )}
@@ -330,12 +341,18 @@ const OutfitUploadPage = () => {
                     <Controller
                       name="garment_chest"
                       control={control}
+                      rules={selectedCategory === 'dress' ? {
+                        required: 'Chest measurement is required for dresses',
+                        min: { value: 1, message: 'Chest must be positive' }
+                      } : undefined}
                       render={({ field }) => (
                         <TextField
                           {...field}
                           type="number"
                           fullWidth
-                          label="Chest (cm)"
+                          label={`Chest (cm)${selectedCategory === 'dress' ? ' *' : ''}`}
+                          error={!!errors.garment_chest}
+                          helperText={errors.garment_chest?.message}
                           onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
                         />
                       )}
@@ -346,12 +363,18 @@ const OutfitUploadPage = () => {
                     <Controller
                       name="garment_waist"
                       control={control}
+                      rules={selectedCategory === 'dress' ? {
+                        required: 'Waist measurement is required for dresses',
+                        min: { value: 1, message: 'Waist must be positive' }
+                      } : undefined}
                       render={({ field }) => (
                         <TextField
                           {...field}
                           type="number"
                           fullWidth
-                          label="Waist (cm)"
+                          label={`Waist (cm)${selectedCategory === 'dress' ? ' *' : ''}`}
+                          error={!!errors.garment_waist}
+                          helperText={errors.garment_waist?.message}
                           onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
                         />
                       )}
@@ -362,12 +385,18 @@ const OutfitUploadPage = () => {
                     <Controller
                       name="garment_hips"
                       control={control}
+                      rules={selectedCategory === 'dress' ? {
+                        required: 'Hips measurement is required for dresses',
+                        min: { value: 1, message: 'Hips must be positive' }
+                      } : undefined}
                       render={({ field }) => (
                         <TextField
                           {...field}
                           type="number"
                           fullWidth
-                          label="Hips (cm)"
+                          label={`Hips (cm)${selectedCategory === 'dress' ? ' *' : ''}`}
+                          error={!!errors.garment_hips}
+                          helperText={errors.garment_hips?.message}
                           onChange={(e) => field.onChange(parseFloat(e.target.value) || undefined)}
                         />
                       )}
