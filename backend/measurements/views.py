@@ -20,7 +20,7 @@ class MeasurementViewSet(generics.GenericAPIView):
             serializer = self.get_serializer(measurement)
             return Response(serializer.data)
         except Measurement.DoesNotExist:
-            raise NotFound('Measurements not found. Please create measurements first.')
+            return Response(None, status=status.HTTP_200_OK)
     
     def post(self, request):
         """Create new measurements"""
